@@ -15,6 +15,8 @@
 
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
+#include <SoftwareSerial.h>
+SoftwareSerial UNOserial(0, 2); //rx tx
 
 #ifndef STASSID
 #define STASSID "JBHunt Mobile Router 5"
@@ -32,8 +34,12 @@ const int httpsPort = 443;
 const char fingerprint[] PROGMEM = "083b717202436ecaed428693ba7edf81c4bc6230";
 
 void setup() {
-  Serial.begin(115200);
-  Serial.println();
+  pinMode(0, INPUT);
+  pinMode(2, OUTPUT);
+  
+  Serial.begin(9600);
+  UNOserial.begin(9600);
+  /*Serial.println();
   Serial.print("connecting to ");
   Serial.println(ssid);
   WiFi.mode(WIFI_STA);
@@ -78,7 +84,7 @@ void setup() {
     client.println();
     client.println(PostData);
 
-  Serial.println("request sent");
+  //Serial.println("request sent");
   while (client.connected()) {
     String line = client.readStringUntil('\n');
     if (line == "\r") {
@@ -93,7 +99,13 @@ void setup() {
   Serial.println(line);
   Serial.println("==========");
   Serial.println("closing connection");
+  Serial.println();*/
 }
 
 void loop() {
+    if(UNOserial.available() )   
+    { 
+      Serial.write( UNOserial.read() );  
+    }
+  //delay(50);
 }
