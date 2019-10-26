@@ -64,9 +64,19 @@ void setup() {
   Serial.print("requesting URL: ");
   Serial.println(url);
 
-  client.print(String("GET ") + url + " HTTP/1.1\r\n" +
-               "Host: " + host + "\r\n" +
-               "Connection: close\r\n\r\n");
+  //client.print(String("GET ") + url + " HTTP/1.1\r\n" +
+  //             "Host: " + host + "\r\n" +
+  //             "Connection: close\r\n\r\n");
+  char PostData[] = "{\"data\": \"buttz\"}"; // your JSON payload
+  client.println("POST " + url + " HTTP/1.1");
+      client.println("content-type: application/json");
+      client.print("content-length: ");
+      client.println(strlen(PostData));
+    client.print("Host: ");
+    client.println(host);
+    client.println("Connection: close");
+    client.println();
+    client.println(PostData);
 
   Serial.println("request sent");
   while (client.connected()) {
