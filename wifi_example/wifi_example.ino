@@ -32,14 +32,14 @@ const int httpsPort = 443;
 // Use web browser to view and copy
 // SHA1 fingerprint of the certificate
 const char fingerprint[] PROGMEM = "083b717202436ecaed428693ba7edf81c4bc6230";
-
+WiFiClientSecure client;
 void setup() {
   pinMode(0, INPUT);
   pinMode(2, OUTPUT);
   
   Serial.begin(9600);
   UNOserial.begin(9600);
-  /*Serial.println();
+  Serial.println();
   Serial.print("connecting to ");
   Serial.println(ssid);
   WiFi.mode(WIFI_STA);
@@ -53,59 +53,87 @@ void setup() {
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 
+  
   // Use WiFiClientSecure class to create TLS connection
-  WiFiClientSecure client;
-  Serial.print("connecting to ");
-  Serial.println(host);
-
-  Serial.printf("Using fingerprint '%s'\n", fingerprint);
+  
   client.setFingerprint(fingerprint);
 
   if (!client.connect(host, httpsPort)) {
     Serial.println("connection failed");
     return;
   }
+  //Serial.println("reply was:");
+  //Serial.println("==========");
+  //Serial.println(line);
+  //Serial.println("==========");
+  //Serial.println("closing connection");
+  //Serial.println();
+}
 
-  String url = "/";
+bool addingWord=false;
+char measurement[50];
+int i=0;
+int type=0;
+
+void loop() {
+    if(UNOserial.available()>0)   
+    { 
+      char input = UNOserial.read();
+      
+      if(input=='A')
+      {
+        //Serial.println("Height"); 
+        type=0;
+        i=0;
+      }
+      else if(input=='B')
+      {          
+        //Serial.println("Temp");
+        type=1;
+        i=0;
+      }
+      else if(input!='\r' && input!='\n')
+      {
+          measurement[i]=input;
+          i++;
+      }
+      else if(i!=0)
+      {
+            measurement[i]='\0';
+            //Serial.println(measurement);  
+            sendMessage(type,measurement);
+            i=0;        
+      }
+    }
+}
+
+char* PostData = new char[100];
+void sendMessage(int type, char* message)
+{
+  String url = "/sensorData";
   Serial.print("requesting URL: ");
   Serial.println(url);
 
-  //client.print(String("GET ") + url + " HTTP/1.1\r\n" +
-  //             "Host: " + host + "\r\n" +
-  //             "Connection: close\r\n\r\n");
-  char PostData[] = "{\"data\": \"buttz\"}"; // your JSON payload
+  char typeString[5];
+  itoa(type,typeString,10);
+  
+  
+  strcpy(PostData,"");
+  PostData=strcat(PostData,"{\"type\": ");
+  PostData=strcat(PostData,typeString);
+  PostData=strcat(PostData,",\"message\":\"");
+  PostData=strcat(PostData,message);
+  PostData=strcat(PostData,"\"}"); // your JSON payload
+  
   client.println("POST " + url + " HTTP/1.1");
       client.println("content-type: application/json");
       client.print("content-length: ");
       client.println(strlen(PostData));
     client.print("Host: ");
     client.println(host);
-    client.println("Connection: close");
+    //client.println("Connection: close");
     client.println();
     client.println(PostData);
 
-  //Serial.println("request sent");
-  while (client.connected()) {
-    String line = client.readStringUntil('\n');
-    if (line == "\r") {
-      Serial.println("headers received");
-      break;
-    }
-  }
-  String line = client.readStringUntil('\n');
-
-  Serial.println("reply was:");
-  Serial.println("==========");
-  Serial.println(line);
-  Serial.println("==========");
-  Serial.println("closing connection");
-  Serial.println();*/
-}
-
-void loop() {
-    if(UNOserial.available() )   
-    { 
-      Serial.write( UNOserial.read() );  
-    }
-  //delay(50);
+  Serial.println("request sent");
 }

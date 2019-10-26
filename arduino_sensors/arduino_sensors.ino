@@ -15,7 +15,6 @@ void setup(void)
 {
 // start serial port
 Serial.begin(9600);
-Serial.println("Dallas Temperature IC Control Library Demo");
 // Start up the library
 sensors.begin();
 
@@ -24,7 +23,8 @@ sensors.begin();
 }
 void loop(void)
 {
-// The sensor is triggered by a HIGH pulse of 10 or more microseconds.
+  delay(1000);
+  // The sensor is triggered by a HIGH pulse of 10 or more microseconds.
   // Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
   digitalWrite(trigPin, LOW);
   delayMicroseconds(5);
@@ -41,19 +41,18 @@ void loop(void)
   // Convert the time into a distance
   cm = (duration/2) / 29.1;     // Divide by 29.1 or multiply by 0.0343
   inches = (duration/2) / 74;   // Divide by 74 or multiply by 0.0135
-  Serial.println("0");
+  Serial.println("A");
   Serial.println(inches);
 
 
- delay(500);
+  delay(1000);
   
-// call sensors.requestTemperatures() to issue a global temperature
-// request to all devices on the bus
-//Serial.print("Requesting temperatures...");
-sensors.requestTemperatures(); // Send the command to get temperatures
-//Serial.println("DONE");
-//Serial.print("Temperature for the device 1 (index 0) is: ");
-Serial.println("1");
-Serial.println(sensors.getTempFByIndex(0)); //print the temperature on serial monitor
-delay(500);
+  // call sensors.requestTemperatures() to issue a global temperature
+  // request to all devices on the bus
+  //Serial.print("Requesting temperatures...");
+  sensors.requestTemperatures(); // Send the command to get temperatures
+  //Serial.println("DONE");
+  //Serial.print("Temperature for the device 1 (index 0) is: ");
+  Serial.println("B");
+  Serial.println(sensors.getTempFByIndex(0)); //print the temperature on serial monitor
 }
