@@ -110,6 +110,8 @@ void loop() {
 char* PostData = new char[100];
 void sendMessage(int type, char* message)
 {
+  
+  
   String url = "/sensorData";
   Serial.print("requesting URL: ");
   Serial.println(url);
@@ -124,6 +126,7 @@ void sendMessage(int type, char* message)
   PostData=strcat(PostData,",\"message\":\"");
   PostData=strcat(PostData,message);
   PostData=strcat(PostData,"\"}"); // your JSON payload
+  Serial.println(PostData);
   
   client.println("POST " + url + " HTTP/1.1");
       client.println("content-type: application/json");

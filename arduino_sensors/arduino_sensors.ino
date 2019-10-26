@@ -23,7 +23,6 @@ sensors.begin();
 }
 void loop(void)
 {
-  delay(1000);
   // The sensor is triggered by a HIGH pulse of 10 or more microseconds.
   // Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
   digitalWrite(trigPin, LOW);
@@ -45,7 +44,7 @@ void loop(void)
   Serial.println(inches);
 
 
-  delay(1000);
+  delay(1500);
   
   // call sensors.requestTemperatures() to issue a global temperature
   // request to all devices on the bus
